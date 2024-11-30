@@ -1,0 +1,11 @@
+<resources>
+
+    <string name="app_name">H10 Dias</string>
+    <string name="nombre_hint">Nombre del camarero</string>
+    <string name="fecha_inicio">Fecha de Inicio</string>
+    <string name="fecha_final">Fecha Final</string>
+    <string name="btn_fecha_inicio">Seleccionar Fecha de Inicio</string>
+    <string name="btn_fecha_final">Seleccionar Fecha Final</string>
+    <string name="btn_calcular">Calcular</string>
+    <string name="resultado_placeholder">Resultado aparecerá aquí</string>
+</resources>
