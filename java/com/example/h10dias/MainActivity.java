@@ -1,4 +1,5 @@
 package com.example.h10dias;
+
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.widget.*;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private Integer[] getDiasArray(int start, int end) {
         Integer[] array = new Integer[end - start + 1];
         for (int i = start; i <= end; i++) {
-            array[i] = i;
+            array[i - start] = i;
         }
         return array;
     }
@@ -99,41 +100,34 @@ public class MainActivity extends AppCompatActivity {
 
         long diasTrabajados = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
 
-        // Calcular días de vacaciones
-        double diasVacaciones = (diasTrabajados / 30.0) * 2.5;
+        // Calcular días de vacaciones (redondeado hacia arriba)
+        double diasVacaciones = Math.ceil((diasTrabajados / 30.0) * 2.5);
 
-        // Sumar días rojos
-        double diasAdicionales = Math.ceil(diasVacaciones) + diasRojos;
-
-        // Calcular días adicionales por descanso semanal
+        // Calcular días adicionales por descanso semanal (redondeado hacia abajo)
+        double diasAdicionales = diasRojos + diasVacaciones;
         if (diasDescanso == 1) {
-            long semanas = diasTrabajados / 7;
+            long semanas = diasTrabajados / 7; // Redondeo implícito hacia abajo
             diasAdicionales += semanas;
         }
 
         // Calcular la fecha de baja
         Calendar fechaBaja = (Calendar) fechaFinal.clone();
-        fechaBaja.add(Calendar.DAY_OF_MONTH, (int) Math.ceil(diasAdicionales));
+        fechaBaja.add(Calendar.DAY_OF_MONTH, (int) diasAdicionales);
 
         // Mostrar resultado
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-// Condición para mostrar los días adicionales dependiendo del descanso semanal
-        String descansoInfo;
-        if (diasDescanso == 1) {
-            descansoInfo = diasAdicionales + " días adicionales por haber librado 1 día semanal.";
-        } else {
-            descansoInfo = "0 días adicionales por haber librado 2 días semanales.";
-        }
+        // Mensaje final
+        String descansoInfo = diasDescanso == 1
+                ? (int) (diasAdicionales - diasVacaciones - diasRojos) + " días adicionales por haber librado 1 día semanal."
+                : "0 días adicionales por haber librado 2 días semanales.";
 
-// Mensaje final con todos los detalles
         String resultado = "El camarero " + nombre +
                 " ha generado " + descansoInfo +
-                " Tiene " + Math.ceil(diasVacaciones) + " días de vacaciones, " +
+                " Tiene " + (int) diasVacaciones + " días de vacaciones, " +
                 "así que en total este camarero estará de baja el día " +
                 sdf.format(fechaBaja.getTime()) + ".";
 
-// Mostrar resultado en el TextView
         tvResultado.setText(resultado);
     }
 }
