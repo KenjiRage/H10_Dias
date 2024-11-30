@@ -103,28 +103,25 @@ public class MainActivity extends AppCompatActivity {
         // Calcular días de vacaciones (redondeado hacia arriba)
         double diasVacaciones = Math.ceil((diasTrabajados / 30.0) * 2.5);
 
-        // Calcular días adicionales por descanso semanal (redondeado hacia abajo)
-        double diasAdicionales = diasRojos + diasVacaciones;
+        // Calcular días adicionales por descanso semanal
+        long diasAdicionalesPorDescanso = 0;
         if (diasDescanso == 1) {
-            long semanas = diasTrabajados / 7; // Redondeo implícito hacia abajo
-            diasAdicionales += semanas;
+            diasAdicionalesPorDescanso = diasTrabajados / 7; // Redondeo hacia abajo
         }
+
+        // Sumar días adicionales totales
+        long diasAdicionalesTotales = diasAdicionalesPorDescanso + diasRojos + (long) diasVacaciones;
 
         // Calcular la fecha de baja
         Calendar fechaBaja = (Calendar) fechaFinal.clone();
-        fechaBaja.add(Calendar.DAY_OF_MONTH, (int) diasAdicionales);
+        fechaBaja.add(Calendar.DAY_OF_MONTH, (int) diasAdicionalesTotales + 1); // Sumar un día adicional
 
         // Mostrar resultado
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-        // Mensaje final
-        String descansoInfo = diasDescanso == 1
-                ? (int) (diasAdicionales - diasVacaciones - diasRojos) + " días adicionales por haber librado 1 día semanal."
-                : "0 días adicionales por haber librado 2 días semanales.";
-
         String resultado = "El camarero " + nombre +
-                " ha generado " + descansoInfo +
-                " Tiene " + (int) diasVacaciones + " días de vacaciones, " +
+                " ha generado " + diasAdicionalesPorDescanso + " días adicionales por haber librado " + diasDescanso + " día semanal. " +
+                "Tiene " + (int) diasVacaciones + " días de vacaciones, " +
                 "así que en total este camarero estará de baja el día " +
                 sdf.format(fechaBaja.getTime()) + ".";
 
